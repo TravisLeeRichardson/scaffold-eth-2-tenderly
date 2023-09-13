@@ -1,4 +1,7 @@
+import * as dotenv from "dotenv";
 import * as chains from "wagmi/chains";
+
+dotenv.config();
 
 export type ScaffoldConfig = {
   targetNetwork: chains.Chain;
@@ -9,9 +12,49 @@ export type ScaffoldConfig = {
   walletAutoConnect: boolean;
 };
 
-const scaffoldConfig = {
+declare type CustomChain = {
+  id: number;
+  name: string;
+  network: string;
+  nativeCurrency: { decimals: number; name: string; symbol: string };
+  rpcUrls: { default: { http: string[] }; public: { http: string[] } };
+};
+
+const tenderly: CustomChain = {
+  id: 11155111,
+  name: "Tenderly",
+  network: "tenderly",
+  nativeCurrency: { decimals: 18, name: "Ether", symbol: "ETH" },
+  rpcUrls: {
+    default: { http: [process.env.NEXT_PUBLIC_TENDERLY_DEVNET_RPC || ""] },
+    public: { http: [process.env.NEXT_PUBLIC_TENDERLY_DEVNET_RPC || ""] },
+  },
+};
+
+const tenderlySepolia: CustomChain = {
+  id: 11155111,
+  name: "Tenderly Sepolia",
+  network: "sepolia",
+  nativeCurrency: { decimals: 18, name: "Ether", symbol: "ETH" },
+  rpcUrls: {
+    default: { http: [process.env.NEXT_PUBLIC_TENDERLY_SEPOLIA_RPC || ""] },
+    public: { http: [process.env.NEXT_PUBLIC_TENDERLY_SEPOLIA_RPC || ""] },
+  },
+};
+
+function getTargetNetwork(): chains.Chain {
+  if (process.env.NEXT_PUBLIC_USE_SEPOLIA === "true") {
+    return tenderlySepolia;
+  }
+  if (process.env.NEXT_PUBLIC_USE_TENDERLY === "true") {
+    return tenderly;
+  }
+  return chains.hardhat;
+}
+
+const scaffoldConfig: ScaffoldConfig = {
   // The network where your DApp lives in
-  targetNetwork: chains.hardhat,
+  targetNetwork: getTargetNetwork(),
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect on the local network

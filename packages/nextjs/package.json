@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "start": "next dev",
+    "start:tenderly": "NEXT_PUBLIC_USE_TENDERLY=true next dev",
+    "start:sepolia": "NEXT_PUBLIC_USE_SEPOLIA=true next dev",
     "build": "next build",
     "serve": "next start",
     "lint": "next lint",

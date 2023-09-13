@@ -10,6 +10,7 @@ import {
 import { configureChains } from "wagmi";
 import * as chains from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 import { publicProvider } from "wagmi/providers/public";
 import scaffoldConfig from "~~/scaffold.config";
 import { burnerWalletConfig } from "~~/services/web3/wagmi-burner/burnerWalletConfig";
@@ -31,6 +32,24 @@ export const appChains = configureChains(
       apiKey: scaffoldConfig.alchemyApiKey,
     }),
     publicProvider(),
+    jsonRpcProvider({
+      rpc: chain => {
+        if (chain.network === "tenderly") {
+          console.log("Tenderly network detected, using custom RPC", process.env.NEXT_PUBLIC_TENDERLY_DEVNET_RPC);
+          return { http: process.env.NEXT_PUBLIC_TENDERLY_DEVNET_RPC || "" };
+        }
+
+        if (chain.network === "sepolia") {
+          console.log(
+            "Tenderly Sepolia network detected, using custom RPC",
+            process.env.NEXT_PUBLIC_TENDERLY_SEPOLIA_RPC,
+          );
+          return { http: process.env.NEXT_PUBLIC_TENDERLY_SEPOLIA_RPC || "" };
+        }
+
+        return { http: process.env.NEXT_PUBLIC_TENDERLY_DEVNET_RPC || "" };
+      },
+    }),
   ],
   {
     // We might not need this checkout https://github.com/scaffold-eth/scaffold-eth-2/pull/45#discussion_r1024496359, will test and remove this before merging

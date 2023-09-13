@@ -36,7 +36,9 @@ type IsContractDeclarationMissing<TYes, TNo> = typeof contractsData extends { [k
 
 type ContractsDeclaration = IsContractDeclarationMissing<GenericContractsDeclaration, typeof contractsData>;
 
-type Contracts = ContractsDeclaration[ConfiguredChainId][0]["contracts"];
+//TODO: This will need to be resolved, but for now just copied what Saverly did.
+//type Contracts = ContractsDeclaration[ConfiguredChainId][0]["contracts"];
+type Contracts = ContractsDeclaration[11155111][0]["contracts"];
 
 export type ContractName = keyof Contracts;
 
