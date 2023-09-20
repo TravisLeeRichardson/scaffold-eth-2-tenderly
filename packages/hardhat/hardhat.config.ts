@@ -116,10 +116,10 @@ const config: HardhatUserConfig = {
       url: "https://goerli.base.org",
       accounts: [deployerPrivateKey],
     },
-    devnet: {
+    tenderly: {
       url: (process.env.TENDERLY_DEVNET_RPC as string) || "",
       accounts: [deployerPrivateKey],
-      chainId: 1,
+      chainId: 11155111,
     },
   },
   verify: {
